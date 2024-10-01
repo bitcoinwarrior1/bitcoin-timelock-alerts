@@ -2,6 +2,30 @@
 
 Receive alerts for when CSVs and CLTVs time conditions are met.
 
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the
+result.
+
+You can start editing the page by modifying `app/page.tsx`. The page
+auto-updates as you edit the file.
+
+This project uses
+[`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to
+automatically optimize and load Inter, a custom Google Font.
+
 ## Use cases
 
 ### Green app 2FA expiry & other security services that leverage timelocks
@@ -37,6 +61,19 @@ The paid tier will allow users to track particular addresses by sending in an `x
 3. The ability to add `xPubs`, enabling new addresses to be derived and tracked for new transactions
 
 Users will pay a monthly subscription, the price will be determined by the amount of inputs to track.
+
+## Requirements 
+
+### MVP
+1. Create a web interface that lets a user paste an address or UTXO 
+2. Show an error if the UTXO or address does not contain any timelock scripts
+2. Grab all the timelock conditions from the UTXO(s), including the timestamp and unlock conditions
+3. Create an iCal file for each timelock & its condition(s)
+4. Download the calendar file 
+
+### Post MVP premium requirements 
+1. Email alerts (including alerts for new inputs, and spending of tracked inputs) 
+2. Real time monitoring of addresses/xPubs for new inputs
 
 ## Architecture
 
@@ -134,3 +171,78 @@ This function gets an iCal file for a particular timelock. Each transaction coul
    </td>
   </tr>
 </table>
+
+Returns: 
+
+<table>
+  <tr>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><code>iCal</code>
+   </td>
+   <td><code>string</code>
+   </td>
+   <td>The iCal file data
+   </td>
+  </tr>
+</table>
+
+### getTimeLocksFromAddressUTXOs
+This function gets UTXOs from an address and finds the timelock conditions. 
+
+<table>
+  <tr>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><code>address</code>
+   </td>
+   <td><code>string</code>
+   </td>
+   <td>The bitcoin address
+   </td>
+  </tr>
+</table>
+
+
+```ts
+type UTXOsWithTimeLocks = {
+    txHashes: string[],
+    timelocks: number[],
+    conditions: string[],
+}
+```
+
+Returns:
+<table>
+  <tr>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Type</strong>
+   </td>
+   <td><strong>Description</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><code>UTXOsWithTimeLocks</code>
+   </td>
+   <td><code>UTXOsWithTimeLocks</code>
+   </td>
+   <td>An object of type UTXOsWithTimeLocks
+   </td>
+  </tr>
+</table>
+
+### Database
+This project uses MongoDB.
